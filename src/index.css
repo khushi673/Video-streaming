@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0E1116;
+  --color-surface: #171A21;
+  --color-surface2: #21252E;
+  --color-line: #2B303B;
+  --color-ink: #F2F4F7;
+  --color-accent: #4B79C8;
+  --color-accent-dark: #3A62A8;
+  --color-gold: #4B79C8;
+  --color-goldsoft: #21252E;
+  --color-ok: #4B79C8;
+  --color-hot: #4B79C8;
+  --color-sky: #21252E;
+  --color-blush: #21252E;
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--color-bg); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; font-feature-settings: "tnum" 0; }
+button { cursor: pointer; font-family: inherit; }
+h1, h2, h3, .font-display { font-weight: 700; letter-spacing: -0.028em; line-height: 1.05; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+.btn-primary { background: var(--color-accent); color: #fff; border-radius: 6px; font-weight: 700; transition: background .15s; }
+.btn-primary:hover { background: var(--color-accent-dark); }
+.btn-play { background: #fff; color: #111; border-radius: 6px; font-weight: 700; transition: background .15s; }
+.btn-play:hover { background: rgba(255,255,255,.78); }
+.btn-ghost { background: rgba(120,126,138,.45); color: #fff; border-radius: 6px; font-weight: 700; transition: background .15s; backdrop-filter: blur(6px); }
+.btn-ghost:hover { background: rgba(120,126,138,.65); }
+.btn-gold { background: var(--color-surface2); color: var(--color-ink); border-radius: 6px; font-weight: 600; transition: background .15s; }
+.btn-gold:hover { background: #2A2F3A; }
+.scrim-l { background: linear-gradient(90deg, rgba(14,17,22,.92) 0%, rgba(14,17,22,.55) 38%, rgba(14,17,22,0) 70%); }
+.scrim-b { background: linear-gradient(0deg, rgba(14,17,22,1) 0%, rgba(14,17,22,0) 100%); }
+.scrim-t { background: linear-gradient(180deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 100%); }
+/* Top 10 numerals: tall outlined digits tucked behind the poster */
+.rank { font-weight: 700; line-height: .74; letter-spacing: -0.06em; color: var(--color-bg); -webkit-text-stroke: 1.5px #5d6470; }
+
+@keyframes sheet { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { 0% { transform: scale(.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.anim-sheet { animation: sheet .22s ease-out; }
+.anim-fade { animation: fade .2s ease-out; }
+.anim-pop { animation: pop .2s ease-out; }
+.anim-rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .anim-sheet, .anim-fade, .anim-pop, .anim-rise { animation: none; } }
