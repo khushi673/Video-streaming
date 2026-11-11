@@ -102,7 +102,7 @@ export default function Shell() {
 
             <div className="ml-auto flex items-center gap-4 @5xl:gap-5">
               {/* Search: icon expands into a field, like Netflix */}
-              <div className={`flex items-center transition-all duration-200 ${searching ? 'border border-ink/80 bg-black/70 pl-2.5 pr-2' : ''}`}>
+              <div className={`flex items-center transition-all duration-200 ${searching ? 'border border-white/25 bg-black/60 backdrop-blur rounded-full pl-2.5 pr-3 focus-within:border-accent focus-within:shadow-[0_0_0_3px_rgba(255,46,99,.25)]' : ''}`}>
                 <button onClick={() => setSearching(true)} aria-label="Search" className="text-ink p-1"><Search size={20} /></button>
                 {searching && <input ref={searchRef} value={q} onChange={(e) => onSearch(e.target.value)} onBlur={() => { if (!q) setSearching(false) }} placeholder="Titles, genres, themes" aria-label="Search titles" className="bg-transparent outline-none focus-visible:outline-none text-sm w-48 @5xl:w-60 px-2.5 py-1.5 placeholder:text-ink/45" />}
               </div>

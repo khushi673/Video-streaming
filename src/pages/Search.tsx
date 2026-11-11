@@ -18,7 +18,7 @@ export default function SearchPage() {
     <div className="px-4 @3xl:px-12 pb-10 @3xl:pt-4">
       <div className="relative max-w-2xl @3xl:hidden">
         <SearchIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/50" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Titles, genres, themes" aria-label="Search" className="w-full bg-surface border border-line rounded-md pl-11 pr-4 py-3 text-[15px] outline-none focus:border-ink/60 placeholder:text-ink/40" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Titles, genres, themes" aria-label="Search" className="w-full bg-surface border border-line rounded-full pl-11 pr-4 py-3 text-[15px] outline-none focus:border-accent focus:shadow-[0_0_0_3px_rgba(255,46,99,.25)] placeholder:text-ink/40" />
       </div>
       <div className="flex gap-2 overflow-x-auto no-scrollbar mt-4">
         {genres.map((x) => <button key={x} onClick={() => setG(x)} className={`shrink-0 px-4 py-1.5 rounded-full text-[13px] font-semibold border ${g === x ? 'chip-on' : 'border-line text-ink/70 hover:border-ink/60 bg-surface'}`}>{x}</button>)}
