@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Apple, Play } from 'lucide-react'
 import { useToast } from '../components/ui'
 
 const NOTE = 'Placeholder text for the prototype. Replace with reviewed copy before launch.'
@@ -12,7 +11,6 @@ const PAGES: Record<string, { title: string; body: string[] }> = {
   help: { title: 'Help centre', body: ['Episodes 1 to 3 of every show are free. Later episodes unlock with coins or a Premium plan.', 'Unlocked episodes stay on your account. Premium gives access to every eligible episode while it is active.', 'Ad rewards are on the Rewards page.', 'Need more help? Use Contact us.'] },
   about: { title: 'About Reelo', body: ['Reelo is a short vertical series platform made to watch in minutes, with live-action shows, AI series, Originals and interactive stories.', NOTE] },
   press: { title: 'Media and public relations', body: ['For press enquiries, interviews and assets, email press@reelo.example.', NOTE] },
-  apps: { title: 'Get the app', body: ['Reelo for iOS and Android is planned. Subscriptions in the apps will be billed through the App Store and Google Play.'] },
 }
 
 export default function Info() {
@@ -43,12 +41,6 @@ export default function Info() {
     <div className={wrap}>
       <h1 className="text-[34px] @3xl:text-[44px]">{page.title}</h1>
       <div className="mt-5 space-y-4 text-[16px] text-ink/75 leading-relaxed">{page.body.map((b) => <p key={b}>{b}</p>)}</div>
-      {slug === 'apps' && (
-        <div className="mt-7 flex flex-wrap gap-3">
-          <button onClick={() => toast('You’re on the list')} className="btn-ghost inline-flex items-center gap-2 px-5 py-3"><Apple size={20} />App Store</button>
-          <button onClick={() => toast('You’re on the list')} className="btn-ghost inline-flex items-center gap-2 px-5 py-3"><Play size={18} />Google Play</button>
-        </div>
-      )}
     </div>
   )
 }

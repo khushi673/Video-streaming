@@ -46,7 +46,7 @@ export default function Plans() {
             ))}
           </div>
           <button onClick={() => setPay(true)} className="btn-primary w-full mt-4 py-4 text-base">{sub ? 'Switch to' : 'Subscribe to'} {plan.name.toLowerCase()} for {money(plan.price)}</button>
-          <p className="text-xs text-ink/45 mt-3 leading-relaxed">Prices and perks are placeholders until confirmed. Taxes may apply. In the iOS and Android apps, subscriptions are billed through the App Store and Google Play.</p>
+          <p className="text-xs text-ink/45 mt-3 leading-relaxed">Prices and perks are placeholders until confirmed. Taxes may apply.</p>
         </div>
 
         <div className="mt-8 @3xl:mt-10">

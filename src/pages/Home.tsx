@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Play, Info, Smartphone } from 'lucide-react'
+import { Play, Info } from 'lucide-react'
 import { useStore } from '../store'
 import { Card, Row } from '../components/Cards'
 import { bannerSrc, coverSrc, FREE_EPISODES, isInteractive, themeShelves } from '../data'
@@ -59,9 +59,6 @@ export default function HomePage() {
         <Row title="AI originals" shows={live.filter((s) => s.type === 'AI')} viewAll="/browse/ai" />
         <Row title="Live action" shows={live.filter((s) => s.type === 'Real')} viewAll="/browse/live" />
         {genres.map((g) => <Row key={g} title={g} shows={live.filter((s) => s.genre === g)} />)}
-        <Link to="/info/apps" className="mx-4 @3xl:mx-12 mt-10 flex items-center gap-4 bg-gradient-to-r from-[#2a1545] to-[#3a1030] border border-line rounded-2xl px-5 py-5 hover:border-accent/60">
-          <Smartphone size={28} className="text-accent shrink-0" /><span className="flex-1"><b className="block text-base">Watch anytime, anywhere</b><span className="text-sm text-ink/60">The Reelo iOS and Android apps are coming soon.</span></span><span className="font-semibold text-accent text-sm">Get the app</span>
-        </Link>
         <section className="mt-12 px-4 @3xl:px-12 pb-6">
           <h2 className="text-lg @3xl:text-[22px] font-bold mb-3 tracking-tight">Browse all</h2>
           <div className="grid grid-cols-3 @3xl:grid-cols-6 @5xl:grid-cols-8 gap-3 @3xl:gap-5">{live.map((s) => <Card key={s.id} s={s} />)}</div>

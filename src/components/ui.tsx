@@ -81,7 +81,7 @@ export const Checkout = ({ title, amount, onDone, onClose }: { title: string; am
             <span className="text-sm text-ink/70">{title}</span>
             <span className="text-xl font-bold">{amount}</span>
           </div>
-          {[['card', 'Credit or debit card', 'Visa ending 4242'], ['apple', 'Apple Pay', 'In the iOS app this uses App Store billing'], ['google', 'Google Pay', 'In the Android app this uses Play Billing']].map(([id, n, d]) => (
+          {[['card', 'Credit or debit card', 'Visa ending 4242'], ['apple', 'Apple Pay', 'Pay with your Apple account'], ['google', 'Google Pay', 'Pay with your Google account']].map(([id, n, d]) => (
             <button key={id} onClick={() => setMethod(id)} className={`w-full flex items-center gap-3 p-3.5 rounded-md mb-2 border text-left ${method === id ? 'border-ink' : 'border-line'}`}>
               <CreditCard size={19} className="text-ink/55" />
               <div className="flex-1"><div className="text-sm font-semibold">{n}</div><div className="text-xs text-ink/50">{d}</div></div>

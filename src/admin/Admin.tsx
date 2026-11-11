@@ -332,7 +332,7 @@ function UserDetail() {
   const u = users.find((x) => x.id === id)
   if (!u) return <div>User not found. <Link to="/admin/users" className="underline">Back to users</Link></div>
   const txs = adminTx.filter((t) => t.userId === u.id).map((t) => (refunds[t.txnId] ? { ...t, status: 'Refunded' as const } : t))
-  const facts: [string, string][] = [['Plan', u.plan], ['Coin balance', String(u.coins)], ['Total paid', money(spentBy(u.id))], ['Joined', u.joined], ['Last active', u.lastActive], ['Signed up on', u.platform]]
+  const facts: [string, string][] = [['Plan', u.plan], ['Coin balance', String(u.coins)], ['Total paid', money(spentBy(u.id))], ['Joined', u.joined], ['Last active', u.lastActive]]
   return (
     <div className="max-w-6xl">
       <Link to="/admin/users" className="text-sm text-ink/55 flex items-center gap-1 mb-3"><ArrowLeft size={14} />Back to users</Link>
@@ -343,15 +343,14 @@ function UserDetail() {
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">{facts.map(([k, v]) => <div key={k} className={`${card} !p-4`}><div className="text-xs text-ink/50">{k}</div><div className="font-bold mt-1">{v}</div></div>)}</div>
       <h2 className="text-lg font-bold mb-3">Payments and transactions</h2>
       <div className={`${card} p-0 overflow-x-auto`}>
-        <table className="w-full text-sm whitespace-nowrap"><thead className="text-left text-ink/50 text-xs border-b border-line"><tr><th className="p-3">Transaction ID</th><th>Date</th><th>Item</th><th>Amount</th><th>Payment method</th><th>Platform</th><th>Provider reference</th><th>Status</th><th></th></tr></thead>
+        <table className="w-full text-sm whitespace-nowrap"><thead className="text-left text-ink/50 text-xs border-b border-line"><tr><th className="p-3">Transaction ID</th><th>Date</th><th>Item</th><th>Amount</th><th>Payment method</th><th>Provider reference</th><th>Status</th><th></th></tr></thead>
           <tbody>{txs.map((t) => (
             <tr key={t.txnId} className="border-b border-line">
-              <td className={`p-3 ${mono}`}>{t.txnId}</td><td>{t.date}</td><td>{t.item}</td><td className="font-semibold">{money(t.amount)}</td><td>{t.method}</td><td>{t.platform}</td><td className={mono}>{t.ref}</td>
+              <td className={`p-3 ${mono}`}>{t.txnId}</td><td>{t.date}</td><td>{t.item}</td><td className="font-semibold">{money(t.amount)}</td><td>{t.method}</td><td className={mono}>{t.ref}</td>
               <td><span className={statusPill(t.status)}>{t.status}</span></td>
               <td className="pr-3 text-right">{t.status === 'Paid' && <button onClick={() => { refund(t.txnId); toast(`Refund recorded for ${t.txnId}`) }} className="text-xs font-semibold text-ink/60 hover:text-ink underline">Refund</button>}</td>
             </tr>))}</tbody></table>
       </div>
-      <p className="text-xs text-ink/40 mt-3">Web payments show the card or wallet used. In the iOS and Android apps, purchases go through the App Store or Google Play and the store handles refunds.</p>
     </div>
   )
 }
@@ -373,10 +372,10 @@ function Purchases() {
         <select value={st} onChange={(e) => setSt(e.target.value)} aria-label="Filter by status" className="bg-surface border border-line rounded-md px-3 py-2.5 text-sm">{['All', 'Paid', 'Refunded', 'Failed'].map((x) => <option key={x}>{x}</option>)}</select>
       </div>
       <div className={`${card} p-0 overflow-x-auto`}>
-        <table className="w-full text-sm whitespace-nowrap"><thead className="text-left text-ink/50 text-xs border-b border-line"><tr><th className="p-3">Transaction ID</th><th>Date</th><th>Customer</th><th>Item</th><th>Amount</th><th>Payment method</th><th>Platform</th><th>Provider reference</th><th>Status</th><th></th></tr></thead>
+        <table className="w-full text-sm whitespace-nowrap"><thead className="text-left text-ink/50 text-xs border-b border-line"><tr><th className="p-3">Transaction ID</th><th>Date</th><th>Customer</th><th>Item</th><th>Amount</th><th>Payment method</th><th>Provider reference</th><th>Status</th><th></th></tr></thead>
           <tbody>{rows.map((t) => (
             <tr key={t.txnId} className="border-b border-line">
-              <td className={`p-3 ${mono}`}>{t.txnId}</td><td>{t.date}</td><td>{t.user}</td><td>{t.item}</td><td className="font-semibold">{money(t.amount)}</td><td>{t.method}</td><td>{t.platform}</td><td className={mono}>{t.ref}</td>
+              <td className={`p-3 ${mono}`}>{t.txnId}</td><td>{t.date}</td><td>{t.user}</td><td>{t.item}</td><td className="font-semibold">{money(t.amount)}</td><td>{t.method}</td><td className={mono}>{t.ref}</td>
               <td><span className={statusPill(t.status)}>{t.status}</span></td>
               <td className="pr-3 text-right">{t.status === 'Paid' && <button onClick={() => { refund(t.txnId); toast(`Refund recorded for ${t.txnId}`) }} className="text-xs font-semibold text-ink/60 hover:text-ink underline">Refund</button>}</td>
             </tr>))}
