@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { NavLink, Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { Home, Crown, User, Search, Bell, ChevronDown, LogOut, Coins as CoinsIcon, ShieldCheck, Monitor, Smartphone, Gift } from 'lucide-react'
 import { useStore } from '../store'
-import { themeShelves, THEME_EMOJI } from '../data'
+import { themeShelves } from '../data'
 import { Toast, Coin, Frame, Sheet } from './ui'
 import Footer from './Footer'
 import Logo from './Logo'
@@ -24,7 +24,6 @@ const formats = [
   { to: '/browse/originals', label: 'Reelo Originals', d: 'Made for Reelo' },
   { to: '/browse/interactive', label: 'Interactive', d: 'You choose what happens' },
 ]
-const GENRE_EMOJI: Record<string, string> = { Romance: '💘', Thriller: '🔪', Comedy: '😂', Drama: '🎭', Fantasy: '🐉', 'Sci-Fi': '🚀', Horror: '👻', Action: '💥' }
 const notes = [
   { t: 'New episodes of Neon Dynasty 2099', d: '2 days ago' },
   { t: 'Heiress in Disguise is now streaming', d: '4 days ago' },
@@ -86,9 +85,9 @@ export default function Shell() {
                         <div className="absolute left-0 top-full pt-3 anim-fade z-40">
                           <div className="w-[600px] grid grid-cols-3 gap-6 bg-bg/95 backdrop-blur border border-line rounded-2xl shadow-2xl p-5">
                             <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Genres</p>
-                              <ul className="space-y-0.5">{genres.map((g) => <li key={g}><Link to={`/browse/genre/${encodeURIComponent(g)}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10"><span aria-hidden="true">{GENRE_EMOJI[g] ?? '🎬'}</span>{g}</Link></li>)}</ul></div>
+                              <ul className="space-y-0.5">{genres.map((g) => <li key={g}><Link to={`/browse/genre/${encodeURIComponent(g)}`} className="block rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10">{g}</Link></li>)}</ul></div>
                             <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Themes</p>
-                              <ul className="space-y-0.5">{themes.map((t) => <li key={t}><Link to={`/browse/tag/${encodeURIComponent(t)}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10"><span aria-hidden="true">{THEME_EMOJI[t] ?? '✨'}</span>{t}</Link></li>)}</ul></div>
+                              <ul className="space-y-0.5">{themes.map((t) => <li key={t}><Link to={`/browse/tag/${encodeURIComponent(t)}`} className="block rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10">{t}</Link></li>)}</ul></div>
                             <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Format</p>
                               <ul className="space-y-0.5">{formats.map((f) => <li key={f.to}><Link to={f.to} className="block rounded-lg px-2 py-1.5 hover:bg-white/10"><span className="block text-sm font-semibold text-ink/90">{f.label}</span><span className="block text-xs text-ink/50">{f.d}</span></Link></li>)}</ul></div>
                           </div>
@@ -172,7 +171,7 @@ export default function Shell() {
         {catSheet && (
           <Sheet title="Categories" onClose={() => setCatSheet(false)}>
             <div className="max-h-[65dvh] overflow-y-auto no-scrollbar space-y-5">
-              {([['Genres', genres.map((g) => [`${GENRE_EMOJI[g] ?? '🎬'} ${g}`, `/browse/genre/${encodeURIComponent(g)}`])], ['Themes', themes.map((t) => [`${THEME_EMOJI[t] ?? '✨'} ${t}`, `/browse/tag/${encodeURIComponent(t)}`])], ['Format', formats.map((f) => [f.label, f.to])]] as [string, string[][]][]).map(([h, items]) => (
+              {([['Genres', genres.map((g) => [g, `/browse/genre/${encodeURIComponent(g)}`])], ['Themes', themes.map((t) => [t, `/browse/tag/${encodeURIComponent(t)}`])], ['Format', formats.map((f) => [f.label, f.to])]] as [string, string[][]][]).map(([h, items]) => (
                 <div key={h}><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">{h}</p>
                   <div className="flex flex-wrap gap-2">{items.map(([l, to]) => <Link key={to} to={to} className="px-3.5 py-1.5 rounded-full text-[13px] font-semibold border border-line bg-surface hover:border-accent/60">{l}</Link>)}</div></div>
               ))}

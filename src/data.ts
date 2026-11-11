@@ -93,7 +93,6 @@ export const isInteractive = (s: Show) => s.kind === 'Interactive'
 /** Card badges: New / Hot (1M+ views) / Trending, like ReelShort's Top shelf. */
 export const badgesFor = (s: Show): string[] => [s.isNew && 'New', s.views >= 1_000_000 && 'Hot', s.trending && 'Trending'].filter(Boolean) as string[]
 
-export const THEME_EMOJI: Record<string, string> = { 'Hidden Identity': '🎭', 'Second Chance': '💫', Billionaire: '💎', 'Fated Lovers': '💘', 'Time Loop': '⏳' }
 /** Tags shared by 2+ published shows become themed shelves. */
 export const themeShelves = (shows: Show[]) => {
   const count: Record<string, number> = {}

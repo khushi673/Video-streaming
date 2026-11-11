@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Film, Tag, Users, Receipt, ArrowLeft, Upload, Plus } from 'lucide-react'
+import { LayoutDashboard, Film, Tag, Users, Receipt, ArrowLeft, Upload, Plus, Check } from 'lucide-react'
 import { useStore } from '../store'
 import { Toast, Poster, useToast } from '../components/ui'
 import Logo from '../components/Logo'
@@ -224,7 +224,7 @@ function ShowEdit() {
 
       <div className={`${card} mb-5`}>
         <h2 className="font-bold mb-3">Setup checklist</h2>
-        <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">{steps.map(([t, ok]) => <li key={t} className="flex items-center gap-2"><span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${ok ? 'bg-accent text-white' : 'border border-line text-ink/30'}`}>{ok ? '✓' : ''}</span><span className={ok ? '' : 'text-ink/60'}>{t}</span></li>)}</ul>
+        <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">{steps.map(([t, ok]) => <li key={t} className="flex items-center gap-2"><span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${ok ? 'bg-accent text-white' : 'border border-line text-ink/30'}`}>{ok ? <Check size={12} strokeWidth={3} /> : null}</span><span className={ok ? '' : 'text-ink/60'}>{t}</span></li>)}</ul>
       </div>
 
       <div className="grid xl:grid-cols-[320px_1fr] gap-5 items-start">
@@ -262,7 +262,7 @@ function ShowEdit() {
                   <td><input aria-label={`Episode ${e.n} title`} className={`${inp} w-40`} value={e.title} onChange={(ev) => updateEpisode(show.id, e.n, { title: ev.target.value })} /></td>
                   <td>
                     <label className="inline-flex items-center gap-1.5 text-xs font-semibold cursor-pointer text-accent hover:underline">
-                      {e.video ? <><span className="text-ok">✓</span><span className="max-w-[90px] truncate text-ink/70" title={e.video}>{e.video}</span><span>Replace</span></> : <><Upload size={13} />Upload</>}
+                      {e.video ? <><Check size={13} className="text-ok" /><span className="max-w-[90px] truncate text-ink/70" title={e.video}>{e.video}</span><span>Replace</span></> : <><Upload size={13} />Upload</>}
                       <input type="file" accept="video/*" className="sr-only" onChange={(ev) => upload(e.n, ev.target.files?.[0])} />
                     </label>
                   </td>

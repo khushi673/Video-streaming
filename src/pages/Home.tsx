@@ -3,9 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Play, Info, Smartphone } from 'lucide-react'
 import { useStore } from '../store'
 import { Card, Row } from '../components/Cards'
-import { bannerSrc, coverSrc, FREE_EPISODES, isInteractive, themeShelves, THEME_EMOJI } from '../data'
-
-const GENRE_EMOJI: Record<string, string> = { Romance: '💘', Thriller: '🔪', Comedy: '😂', Drama: '🎭', Fantasy: '🐉', 'Sci-Fi': '🚀', Horror: '👻', Action: '💥' }
+import { bannerSrc, coverSrc, FREE_EPISODES, isInteractive, themeShelves } from '../data'
 
 export default function HomePage() {
   const { shows, progress } = useStore()
@@ -35,7 +33,7 @@ export default function HomePage() {
           <div className="absolute inset-0 scrim-l hidden @3xl:block" />
           <div className="absolute inset-x-0 bottom-0 h-3/4 scrim-b" />
           <div className="absolute inset-x-0 bottom-0 px-5 @3xl:px-12 pb-8 @3xl:pb-20 @3xl:max-w-[760px]">
-            <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-ink/85"><span className="bg-gradient-to-r from-[#FF2E63] to-[#FF7A1A] text-white text-xs font-extrabold rounded-full px-2.5 py-1 shadow-lg">🔥 Trending</span>{hero.type === 'AI' ? 'AI series' : 'Live action'} · {hero.genre}</p>
+            <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-ink/85"><span className="bg-gradient-to-r from-[#FF2E63] to-[#FF7A1A] text-white text-xs font-extrabold rounded-full px-2.5 py-1 shadow-lg">Trending</span>{hero.type === 'AI' ? 'AI series' : 'Live action'} · {hero.genre}</p>
             <h1 className="mt-2 text-[40px] @3xl:text-[72px] font-extrabold leading-[0.96] tracking-[-0.035em]">{hero.title}</h1>
             <p className="mt-3 text-[15px] @3xl:text-lg text-ink/85 leading-snug max-w-xl line-clamp-3">{hero.synopsis}</p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -52,15 +50,15 @@ export default function HomePage() {
         </section>
       )}
       <div className="relative z-10 -mt-4 @3xl:-mt-10">
-        <Row title="Continue watching ▶️" shows={cont} continuing={progress} />
-        <Row ranked title="Top 10 this week 🔥" shows={live.filter((s) => s.trending)} viewAll="/browse/top" />
-        <Row title="New releases ✨" shows={live.filter((s) => s.isNew)} viewAll="/browse/new" />
-        <Row title="Reelo Originals 🌏" shows={live.filter((s) => s.original)} viewAll="/browse/originals" />
-        <Row title="Interactive stories 💕" shows={live.filter(isInteractive)} viewAll="/browse/interactive" />
-        {themes.map((t) => <Row key={t} title={`${t} ${THEME_EMOJI[t] ?? ''}`.trim()} shows={live.filter((s) => (s.tags ?? []).includes(t))} viewAll={`/browse/tag/${encodeURIComponent(t)}`} />)}
-        <Row title="AI originals 🤖" shows={live.filter((s) => s.type === 'AI')} viewAll="/browse/ai" />
-        <Row title="Live action 🎬" shows={live.filter((s) => s.type === 'Real')} viewAll="/browse/live" />
-        {genres.map((g) => <Row key={g} title={`${g} ${GENRE_EMOJI[g] ?? ''}`.trim()} shows={live.filter((s) => s.genre === g)} />)}
+        <Row title="Continue watching" shows={cont} continuing={progress} />
+        <Row ranked title="Top 10 this week" shows={live.filter((s) => s.trending)} viewAll="/browse/top" />
+        <Row title="New releases" shows={live.filter((s) => s.isNew)} viewAll="/browse/new" />
+        <Row title="Reelo Originals" shows={live.filter((s) => s.original)} viewAll="/browse/originals" />
+        <Row title="Interactive stories" shows={live.filter(isInteractive)} viewAll="/browse/interactive" />
+        {themes.map((t) => <Row key={t} title={t} shows={live.filter((s) => (s.tags ?? []).includes(t))} viewAll={`/browse/tag/${encodeURIComponent(t)}`} />)}
+        <Row title="AI originals" shows={live.filter((s) => s.type === 'AI')} viewAll="/browse/ai" />
+        <Row title="Live action" shows={live.filter((s) => s.type === 'Real')} viewAll="/browse/live" />
+        {genres.map((g) => <Row key={g} title={g} shows={live.filter((s) => s.genre === g)} />)}
         <Link to="/info/apps" className="mx-4 @3xl:mx-12 mt-10 flex items-center gap-4 bg-gradient-to-r from-[#2a1545] to-[#3a1030] border border-line rounded-2xl px-5 py-5 hover:border-accent/60">
           <Smartphone size={28} className="text-accent shrink-0" /><span className="flex-1"><b className="block text-base">Watch anytime, anywhere</b><span className="text-sm text-ink/60">The Reelo iOS and Android apps are coming soon.</span></span><span className="font-semibold text-accent text-sm">Get the app</span>
         </Link>
