@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom'
-import { Home, Crown, User, Search, Bell, ChevronDown, LogOut, Coins as CoinsIcon, ShieldCheck, Monitor, Smartphone } from 'lucide-react'
+import { Home, Crown, User, Search, Bell, ChevronDown, LogOut, Coins as CoinsIcon, ShieldCheck, Monitor, Smartphone, Gift } from 'lucide-react'
 import { useStore } from '../store'
 import { Toast, Coin, Frame } from './ui'
 import Footer from './Footer'
@@ -16,6 +16,8 @@ const links = [
   { to: '/', label: 'Home' },
   { to: '/browse/ai', label: 'AI series' },
   { to: '/browse/live', label: 'Live action' },
+  { to: '/browse/originals', label: 'Originals' },
+  { to: '/browse/interactive', label: 'Interactive' },
   { to: '/browse/new', label: 'New and popular' },
   { to: '/browse/list', label: 'My list' },
 ]
@@ -61,13 +63,13 @@ export default function Shell() {
   const item = 'flex items-center gap-3 px-4 py-2.5 text-sm text-ink/85 hover:bg-white/10 w-full text-left'
   return (
     <Frame floatingToggle={false}>
-      <div className="h-full relative bg-bg flex flex-col">
+      <div className="h-full relative app-bg flex flex-col">
         {!isWatch && (
-          <header className={`hidden @3xl:flex absolute top-0 inset-x-0 h-[68px] items-center px-6 @5xl:px-12 z-30 transition-colors duration-300 ${solid ? 'bg-bg' : 'scrim-t'}`}>
+          <header className={`hidden @3xl:flex absolute top-0 inset-x-0 h-[68px] items-center px-6 @5xl:px-12 z-30 transition-colors duration-300 ${solid ? 'bg-bg/95 backdrop-blur' : 'scrim-t'}`}>
             <Link to="/" className="text-accent mr-8 @5xl:mr-10 shrink-0" aria-label="Reelo home"><Logo size={28} /></Link>
             <nav className="flex items-center gap-4 @5xl:gap-5" aria-label="Main">
               {links.map((t) => (
-                <NavLink key={t.to} to={t.to} end className={({ isActive }) => `text-[14px] whitespace-nowrap transition-colors ${isActive ? 'text-ink font-bold' : 'text-ink/75 hover:text-ink/100'}`}>{t.label}</NavLink>
+                <NavLink key={t.to} to={t.to} end className={({ isActive }) => `text-[14px] whitespace-nowrap transition-colors ${isActive ? 'text-ink font-extrabold border-b-2 border-accent pb-0.5' : 'text-ink/75 hover:text-ink/100'}`}>{t.label}</NavLink>
               ))}
             </nav>
 
@@ -77,7 +79,7 @@ export default function Shell() {
                 <button onClick={() => setSearching(true)} aria-label="Search" className="text-ink p-1"><Search size={20} /></button>
                 {searching && <input ref={searchRef} value={q} onChange={(e) => onSearch(e.target.value)} onBlur={() => { if (!q) setSearching(false) }} placeholder="Titles, genres, themes" aria-label="Search titles" className="bg-transparent outline-none focus-visible:outline-none text-sm w-48 @5xl:w-60 px-2.5 py-1.5 placeholder:text-ink/45" />}
               </div>
-              <Link to="/coins" className="flex items-center gap-1.5 text-sm font-semibold whitespace-nowrap" aria-label={`${coins} coins, add more`}><Coin size={20} />{coins}</Link>
+              <Link to="/coins" className="flex items-center gap-1.5 text-sm font-bold whitespace-nowrap bg-white/10 hover:bg-white/15 border border-white/10 rounded-full pl-1.5 pr-3 py-1" aria-label={`${coins} coins, add more`}><Coin size={20} />{coins}</Link>
 
               {/* Notifications */}
               <div className="relative" ref={bellRef}>
@@ -92,7 +94,7 @@ export default function Shell() {
               {/* Profile menu */}
               <div className="relative" ref={profileRef}>
                 <button onClick={() => setMenu(menu === 'profile' ? 'none' : 'profile')} aria-expanded={menu === 'profile'} aria-label="Account menu" className="flex items-center gap-1.5 group">
-                  <span className="w-8 h-8 rounded bg-accent text-white flex items-center justify-center text-sm font-bold">{user.name[0]?.toUpperCase()}</span>
+                  <span className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF2E63] to-[#FF7A1A] text-white flex items-center justify-center text-sm font-bold">{user.name[0]?.toUpperCase()}</span>
                   <ChevronDown size={16} className={`transition-transform ${menu === 'profile' ? 'rotate-180' : ''}`} />
                 </button>
                 {menu === 'profile' && (
@@ -100,13 +102,14 @@ export default function Shell() {
                     <div className="px-4 py-3 border-b border-line"><p className="text-sm font-semibold truncate">{user.name}</p><p className="text-xs text-ink/50 truncate">{sub ? 'Premium member' : 'Free account'}</p></div>
                     <Link to="/account" className={item}><User size={17} />Account</Link>
                     <Link to="/coins" className={item}><CoinsIcon size={17} />Coins ({coins})</Link>
+                    <Link to="/rewards" className={item}><Gift size={17} />Rewards</Link>
                     <Link to="/plans" className={item}><Crown size={17} />{sub ? 'Manage plan' : 'Go Premium'}</Link>
                     <Link to="/admin" className={item}><ShieldCheck size={17} />Admin panel</Link>
                     <div className="px-4 py-2.5 border-t border-line">
                       <p className="text-xs text-ink/50 mb-2">Preview as</p>
                       <div className="grid grid-cols-2 gap-1.5">
                         {([['web', Monitor, 'Web'], ['mobile', Smartphone, 'Mobile']] as const).map(([v, Icon, l]) => (
-                          <button key={v} onClick={() => { setView(v); closeMenu() }} className={`flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded ${view === v ? 'bg-white text-[#111]' : 'bg-white/10 hover:bg-white/15'}`}><Icon size={13} />{l}</button>
+                          <button key={v} onClick={() => { setView(v); closeMenu() }} className={`flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded ${view === v ? 'chip-on' : 'bg-white/10 hover:bg-white/15'}`}><Icon size={13} />{l}</button>
                         ))}
                       </div>
                     </div>
@@ -130,7 +133,7 @@ export default function Shell() {
         {!isWatch && (
           <nav className="@3xl:hidden shrink-0 grid grid-cols-4 bg-bg border-t border-line pb-2 pt-1">
             {tabs.map((t) => (
-              <NavLink key={t.to} to={t.to} end className={({ isActive }) => `flex flex-col items-center gap-1 py-2 text-[11px] font-semibold ${isActive ? 'text-ink' : 'text-ink/45'}`}>
+              <NavLink key={t.to} to={t.to} end className={({ isActive }) => `flex flex-col items-center gap-1 py-2 text-[11px] font-semibold ${isActive ? 'text-accent' : 'text-ink/45'}`}>
                 <t.icon size={22} strokeWidth={2} />{t.label}
               </NavLink>
             ))}

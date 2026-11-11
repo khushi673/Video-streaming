@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
 import { useStore } from '../store'
-import { Checkout, Coin, useToast } from '../components/ui'
+import { Checkout, Coin, Confetti, useToast } from '../components/ui'
 import { money, DEFAULT_PRICE, type Pack } from '../data'
 
 export default function Coins() {
   const { packs, coins, buyCoins } = useStore()
   const [sel, setSel] = useState<Pack | null>(null)
+  const [burst, setBurst] = useState(0)
   const nav = useNavigate()
   const [qs] = useSearchParams()
   const ret = qs.get('return')
@@ -18,7 +19,7 @@ export default function Coins() {
       <div className="px-5 @3xl:px-0 pt-5 @3xl:pt-0 @3xl:grid @3xl:grid-cols-2 @3xl:gap-x-20">
         <div>
           <p className="text-sm text-ink/55">Your balance</p>
-          <div className="flex items-center gap-3 mt-1 text-[64px] @3xl:text-[88px] font-bold tracking-[-0.05em] leading-none"><Coin size={52} />{coins}</div>
+          <div className="flex items-center gap-3 mt-1 text-[64px] @3xl:text-[88px] font-extrabold grad-gold tracking-[-0.05em] leading-none"><Coin size={52} />{coins}</div>
           <p className="mt-5 text-[16px] text-ink/65 max-w-sm leading-relaxed">Unlock single episodes without a subscription. An episode costs about {DEFAULT_PRICE} coins, and an unlocked episode stays yours.</p>
         </div>
         <div className="mt-8 @3xl:mt-0">
@@ -35,7 +36,8 @@ export default function Coins() {
           <p className="text-xs text-ink/45 mt-3">Package sizes and prices are placeholders until confirmed.</p>
         </div>
       </div>
-      {sel && <Checkout title={`${(sel.coins + sel.bonus).toLocaleString()} coins`} amount={money(sel.price)} onClose={() => setSel(null)} onDone={(m) => { buyCoins(sel, m); setSel(null); toast(`${sel.coins + sel.bonus} coins added`); if (ret) nav(ret, { replace: true }) }} />}
+      {burst > 0 && <Confetti key={burst} />}
+      {sel && <Checkout title={`${(sel.coins + sel.bonus).toLocaleString()} coins`} amount={money(sel.price)} onClose={() => setSel(null)} onDone={(m) => { buyCoins(sel, m); setSel(null); setBurst((b) => b + 1); toast(`${sel.coins + sel.bonus} coins added`); if (ret) nav(ret, { replace: true }) }} />}
     </div>
   )
 }

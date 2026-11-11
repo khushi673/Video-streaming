@@ -5,7 +5,7 @@ import { useStore } from '../store'
 import { Toast, Poster, useToast } from '../components/ui'
 import Logo from '../components/Logo'
 import { users, adminTx, spentBy } from './adminData'
-import { DEFAULT_PRICE, FREE_EPISODES, fmtViews, money, coverSrc, type Show } from '../data'
+import { DEFAULT_PRICE, FREE_EPISODES, fmtViews, money, coverSrc, RATINGS, ratingOf, type Show, type Rating } from '../data'
 
 const nav = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -74,7 +74,7 @@ function AddShow() {
   const go = useNavigate()
   const [previewId] = useState(() => 'new' + Date.now())
   const [hue] = useState(() => Math.floor(Math.random() * 360))
-  const [f, setF] = useState({ title: '', synopsis: '', type: 'AI' as Show['type'], genre: 'Drama', tags: '', cover: '' as string, count: 50, free: FREE_EPISODES, price: DEFAULT_PRICE, publish: false })
+  const [f, setF] = useState({ title: '', synopsis: '', type: 'AI' as Show['type'], genre: 'Drama', tags: '', cover: '' as string, kind: 'Series' as NonNullable<Show['kind']>, rating: 'All Ages' as Rating, original: false, count: 50, free: FREE_EPISODES, price: DEFAULT_PRICE, publish: false })
   const [tried, setTried] = useState(false)
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }))
   const errs = {
@@ -85,7 +85,7 @@ function AddShow() {
   }
   const bad = Object.values(errs).some(Boolean)
   const tags = f.tags.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 3)
-  const draft: Show = { id: previewId, title: f.title || 'Show title', type: f.type, genre: f.genre, synopsis: f.synopsis, hue, tags, trending: false, isNew: true, status: 'draft', views: 0, coverUrl: f.cover || undefined, episodes: Array.from({ length: f.count || 0 }) as never }
+  const draft: Show = { id: previewId, kind: f.kind, rating: f.rating, original: f.original, title: f.title || 'Show title', type: f.type, genre: f.genre, synopsis: f.synopsis, hue, tags, trending: false, isNew: true, status: 'draft', views: 0, coverUrl: f.cover || undefined, episodes: Array.from({ length: f.count || 0 }) as never }
   const pickCover = (file?: File) => {
     if (!file) return
     const r = new FileReader()
@@ -128,6 +128,11 @@ function AddShow() {
               <div className="grid sm:grid-cols-2 gap-5">
                 <div><label className={label} htmlFor="g">Genre</label><select id="g" className={`${inp} border-line`} value={f.genre} onChange={(e) => set('genre', e.target.value)}>{GENRES.map((g) => <option key={g}>{g}</option>)}</select></div>
                 <div><label className={label} htmlFor="tg">Tags <span className="font-normal text-ink/45">(optional)</span></label><input id="tg" className={`${inp} border-line`} placeholder="Fated Lovers, Billionaire" value={f.tags} onChange={(e) => set('tags', e.target.value)} /><p className={hint}>Separate with commas. Up to 3.</p></div>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-5 mt-5">
+                <div><label className={label} htmlFor="kd">Format</label><select id="kd" className={`${inp} border-line`} value={f.kind} onChange={(e) => set('kind', e.target.value as typeof f.kind)}><option value="Series">Series</option><option value="Interactive">Interactive (viewers make choices)</option></select></div>
+                <div><label className={label} htmlFor="rt">Audience rating</label><select id="rt" className={`${inp} border-line`} value={f.rating} onChange={(e) => set('rating', e.target.value as Rating)}>{RATINGS.map((r) => <option key={r}>{r}</option>)}</select></div>
+                <label className="flex items-center gap-2.5 text-sm sm:mt-8"><input type="checkbox" checked={f.original} onChange={(e) => set('original', e.target.checked)} />Reelo Original</label>
               </div>
             </div>
           </section>
@@ -232,6 +237,11 @@ function ShowEdit() {
               <div><label className={label} htmlFor="ey">Type</label><select id="ey" className={inp} value={show.type} onChange={(e) => updateShow(show.id, { type: e.target.value as Show['type'] })}><option value="AI">AI-generated</option><option value="Real">Live action</option></select></div>
               <div><label className={label} htmlFor="eg">Genre</label><select id="eg" className={inp} value={show.genre} onChange={(e) => updateShow(show.id, { genre: e.target.value })}>{[...new Set([...GENRES, show.genre])].map((g) => <option key={g}>{g}</option>)}</select></div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className={label} htmlFor="ek">Format</label><select id="ek" className={inp} value={show.kind ?? 'Series'} onChange={(e) => updateShow(show.id, { kind: e.target.value as NonNullable<Show['kind']> })}><option value="Series">Series</option><option value="Interactive">Interactive</option></select></div>
+              <div><label className={label} htmlFor="er">Audience rating</label><select id="er" className={inp} value={ratingOf(show)} onChange={(e) => updateShow(show.id, { rating: e.target.value as Rating })}>{RATINGS.map((r) => <option key={r}>{r}</option>)}</select></div>
+            </div>
+            <label className="flex items-center gap-2.5"><input type="checkbox" checked={!!show.original} onChange={(e) => updateShow(show.id, { original: e.target.checked })} />Reelo Original</label>
             <label className="flex items-start gap-2.5"><input type="checkbox" className="mt-0.5" checked={show.trending} onChange={(e) => updateShow(show.id, { trending: e.target.checked })} /><span><b className="block font-semibold">Feature on the home page</b><span className="text-xs text-ink/50">Shows it in the big banner and Top 10.</span></span></label>
           </div>
         </div>

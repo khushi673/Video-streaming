@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Play, Info } from 'lucide-react'
-import { useStore } from '../store'
+import { Play, Info, Gift, Smartphone } from 'lucide-react'
+import { useStore, todayStr } from '../store'
 import { Card, Row } from '../components/Cards'
-import { bannerSrc, coverSrc, FREE_EPISODES } from '../data'
+import { bannerSrc, coverSrc, FREE_EPISODES, isInteractive, themeShelves, THEME_EMOJI } from '../data'
+
+const GENRE_EMOJI: Record<string, string> = { Romance: '💘', Thriller: '🔪', Comedy: '😂', Drama: '🎭', Fantasy: '🐉', 'Sci-Fi': '🚀', Horror: '👻', Action: '💥' }
 
 export default function HomePage() {
-  const { shows, progress } = useStore()
+  const { shows, progress, checkin } = useStore()
   const nav = useNavigate()
   const live = shows.filter((s) => s.status === 'published')
   const featured = live.filter((s) => s.trending).slice(0, 4)
@@ -19,6 +21,8 @@ export default function HomePage() {
   const hero = featured[idx % Math.max(1, featured.length)] ?? live[0]
   const cont = live.filter((s) => progress[s.id])
   const genres = Array.from(new Set(live.map((s) => s.genre))).slice(0, 4)
+  const themes = themeShelves(shows).slice(0, 4)
+  const canCheckin = checkin.last !== todayStr()
   return (
     <div className="pb-6">
       {hero && (
@@ -32,7 +36,7 @@ export default function HomePage() {
           <div className="absolute inset-0 scrim-l hidden @3xl:block" />
           <div className="absolute inset-x-0 bottom-0 h-3/4 scrim-b" />
           <div className="absolute inset-x-0 bottom-0 px-5 @3xl:px-12 pb-8 @3xl:pb-20 @3xl:max-w-[760px]">
-            <p className="text-sm font-semibold text-ink/80">{hero.type === 'AI' ? 'AI series' : 'Live action'} · {hero.genre}</p>
+            <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-ink/85"><span className="bg-gradient-to-r from-[#FF2E63] to-[#FF7A1A] text-white text-xs font-extrabold rounded-full px-2.5 py-1 shadow-lg">🔥 Trending</span>{hero.type === 'AI' ? 'AI series' : 'Live action'} · {hero.genre}</p>
             <h1 className="mt-2 text-[40px] @3xl:text-[72px] font-extrabold leading-[0.96] tracking-[-0.035em]">{hero.title}</h1>
             <p className="mt-3 text-[15px] @3xl:text-lg text-ink/85 leading-snug max-w-xl line-clamp-3">{hero.synopsis}</p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -43,18 +47,29 @@ export default function HomePage() {
           </div>
           {featured.length > 1 && (
             <div className="absolute right-5 @3xl:right-12 bottom-8 @3xl:bottom-20 flex gap-1.5">
-              {featured.map((f, i) => <button key={f.id} onClick={() => setIdx(i)} aria-label={`Show ${f.title}`} className={`h-1 rounded-full transition-all ${f.id === hero.id ? 'w-6 bg-white' : 'w-3 bg-white/40'}`} />)}
+              {featured.map((f, i) => <button key={f.id} onClick={() => setIdx(i)} aria-label={`Show ${f.title}`} className={`h-1 rounded-full transition-all ${f.id === hero.id ? 'w-6 bg-gradient-to-r from-[#FF2E63] to-[#FF7A1A]' : 'w-3 bg-white/40'}`} />)}
             </div>
           )}
         </section>
       )}
       <div className="relative z-10 -mt-4 @3xl:-mt-10">
-        <Row title="Continue watching" shows={cont} continuing={progress} />
-        <Row ranked title="Top 10 this week" shows={live.filter((s) => s.trending)} />
-        <Row title="New releases" shows={live.filter((s) => s.isNew)} />
-        <Row title="AI originals" shows={live.filter((s) => s.type === 'AI')} />
-        <Row title="Live action" shows={live.filter((s) => s.type === 'Real')} />
-        {genres.map((g) => <Row key={g} title={g} shows={live.filter((s) => s.genre === g)} />)}
+        {canCheckin && (
+          <Link to="/rewards" className="mx-4 @3xl:mx-12 mb-2 flex items-center gap-3 bg-gradient-to-r from-[#3a1030] to-[#2a1545] border border-accent/40 rounded-2xl px-4 py-3.5 text-sm hover:border-accent pulse-glow">
+            <Gift size={18} className="text-accent shrink-0" /><span className="flex-1"><b className="font-semibold">Daily check-in is ready.</b> <span className="text-ink/60">Claim free coins today.</span></span><span className="font-semibold text-accent">Claim</span>
+          </Link>
+        )}
+        <Row title="Continue watching ▶️" shows={cont} continuing={progress} />
+        <Row ranked title="Top 10 this week 🔥" shows={live.filter((s) => s.trending)} viewAll="/browse/top" />
+        <Row title="New releases ✨" shows={live.filter((s) => s.isNew)} viewAll="/browse/new" />
+        <Row title="Reelo Originals 🌏" shows={live.filter((s) => s.original)} viewAll="/browse/originals" />
+        <Row title="Interactive stories 💕" shows={live.filter(isInteractive)} viewAll="/browse/interactive" />
+        {themes.map((t) => <Row key={t} title={`${t} ${THEME_EMOJI[t] ?? ''}`.trim()} shows={live.filter((s) => (s.tags ?? []).includes(t))} viewAll={`/browse/tag/${encodeURIComponent(t)}`} />)}
+        <Row title="AI originals 🤖" shows={live.filter((s) => s.type === 'AI')} viewAll="/browse/ai" />
+        <Row title="Live action 🎬" shows={live.filter((s) => s.type === 'Real')} viewAll="/browse/live" />
+        {genres.map((g) => <Row key={g} title={`${g} ${GENRE_EMOJI[g] ?? ''}`.trim()} shows={live.filter((s) => s.genre === g)} />)}
+        <Link to="/info/apps" className="mx-4 @3xl:mx-12 mt-10 flex items-center gap-4 bg-gradient-to-r from-[#2a1545] to-[#3a1030] border border-line rounded-2xl px-5 py-5 hover:border-accent/60">
+          <Smartphone size={28} className="text-accent shrink-0" /><span className="flex-1"><b className="block text-base">Watch anytime, anywhere</b><span className="text-sm text-ink/60">The Reelo iOS and Android apps are coming soon.</span></span><span className="font-semibold text-accent text-sm">Get the app</span>
+        </Link>
         <section className="mt-12 px-4 @3xl:px-12 pb-6">
           <h2 className="text-lg @3xl:text-[22px] font-bold mb-3 tracking-tight">Browse all</h2>
           <div className="grid grid-cols-3 @3xl:grid-cols-6 @5xl:grid-cols-8 gap-3 @3xl:gap-5">{live.map((s) => <Card key={s.id} s={s} />)}</div>

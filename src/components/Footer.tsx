@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Apple, Play } from 'lucide-react'
 import { useStore } from '../store'
 import Logo from './Logo'
 
@@ -17,15 +18,17 @@ export default function Footer() {
         <div>
           <div className="text-accent"><Logo size={26} /></div>
           <p className="mt-3 text-sm text-ink/60 max-w-xs leading-relaxed">Short vertical series, made to watch in minutes. Available on the web, with iOS and Android apps planned.</p>
+          <div className="mt-4 flex gap-2"><Link to="/info/apps" className="btn-ghost inline-flex items-center gap-1.5 px-3 py-1.5 text-xs"><Apple size={14} />App Store</Link><Link to="/info/apps" className="btn-ghost inline-flex items-center gap-1.5 px-3 py-1.5 text-xs"><Play size={13} />Google Play</Link></div>
+          <div className="mt-4 flex items-center gap-4 text-xs font-semibold text-ink/60" aria-label="Social">{[['Facebook','https://facebook.com'],['YouTube','https://youtube.com'],['Instagram','https://instagram.com'],['TikTok','https://tiktok.com']].map(([l, u]) => <a key={l} href={u} target="_blank" rel="noreferrer" className="hover:text-ink">{l}</a>)}</div>
         </div>
         <Group title="Browse" items={genres.slice(0, 5).map((g) => [g, '/'] as [string, string])} />
-        <Group title="Help" items={[['Help centre', '/'], ['Contact us', '/'], ['Restore purchases', '/account']]} />
-        <Group title="Company" items={[['About', '/'], ['Careers', '/'], ['For creators', '/']]} />
+        <Group title="Help" items={[['Help centre', '/info/help'], ['Contact us', '/info/contact'], ['Send feedback', '/info/feedback'], ['Rewards', '/rewards'], ['Restore purchases', '/account']]} />
+        <Group title="Company" items={[['About', '/info/about'], ['Media & PR', '/info/press'], ['Get the app', '/info/apps'], ['Terms of Service', '/info/terms'], ['Privacy Policy', '/info/privacy']]} />
       </div>
       <div className="border-t border-line">
         <div className="max-w-6xl mx-auto px-10 py-5 flex flex-wrap items-center justify-between gap-3 text-xs text-ink/50">
           <span>© 2026 Reelo. Prototype, not a live service. Sample footage: Blender Foundation open movies (CC BY) and Mathieu Stanić, Paris Hypernight (CC BY).</span>
-          <div className="flex gap-5"><Link to="/">Privacy</Link><Link to="/">Terms</Link><Link to="/">Cookies</Link><Link to="/">DMCA</Link></div>
+          <div className="flex gap-5"><Link to="/info/privacy">Privacy</Link><Link to="/info/terms">Terms</Link><Link to="/info/cookies">Cookies</Link><Link to="/info/dmca">DMCA</Link></div>
         </div>
       </div>
     </footer>

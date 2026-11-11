@@ -1,10 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { seedShows, seedPlans, seedPacks, type Show, type Episode, type Plan, type Pack } from './data'
+import { seedShows, seedPlans, seedPacks, CHECKIN_COINS, AD_REWARD, AD_MAX, type Show, type Episode, type Plan, type Pack } from './data'
 
 export type Tx = { id: string; txnId: string; ref: string; method: string; date: string; label: string; money?: number; coins?: number }
 type User = { name: string; email: string; uid: string }
 type Sub = { plan: Plan['id']; renews: string } | null
+export type Comment = { id: string; name: string; text: string; date: string }
+export type Prefs = { newEpisodes: boolean; rewards: boolean; promos: boolean }
 
 type State = {
   view: 'web' | 'mobile'
@@ -35,6 +37,20 @@ type State = {
   addShow: (s: Show) => void
   setPlans: (p: Plan[]) => void
   setPacks: (p: Pack[]) => void
+  lang: string
+  setLang: (l: string) => void
+  comments: Record<string, Comment[]>
+  addComment: (key: string, text: string) => void
+  downloads: string[]
+  toggleDownload: (key: string) => void
+  checkin: { last: string; streak: number }
+  claimCheckin: () => number
+  ads: { date: string; count: number }
+  watchAd: () => boolean
+  prefs: Prefs
+  setPref: (k: keyof Prefs, v: boolean) => void
+  choices: Record<string, 'a' | 'b'>
+  setChoice: (key: string, c: 'a' | 'b') => void
   reset: () => void
 }
 
@@ -56,6 +72,13 @@ const initial = {
   shows: seedShows,
   plans: seedPlans,
   packs: seedPacks,
+  lang: 'Off',
+  comments: {} as Record<string, Comment[]>,
+  downloads: [] as string[],
+  checkin: { last: '', streak: 0 },
+  ads: { date: '', count: 0 },
+  prefs: { newEpisodes: true, rewards: true, promos: false } as Prefs,
+  choices: {} as Record<string, 'a' | 'b'>,
 }
 
 export const useStore = create<State>()(
@@ -97,11 +120,32 @@ export const useStore = create<State>()(
       addShow: (sh) => set((s) => ({ shows: [sh, ...s.shows] })),
       setPlans: (plans) => set({ plans }),
       setPacks: (packs) => set({ packs }),
+      setLang: (lang) => set({ lang }),
+      addComment: (key, text) => set((s) => ({ comments: { ...s.comments, [key]: [{ id: 'c' + Date.now(), name: s.user?.name ?? 'You', text, date: today() }, ...(s.comments[key] ?? [])] } })),
+      toggleDownload: (key) => set((s) => ({ downloads: s.downloads.includes(key) ? s.downloads.filter((x) => x !== key) : [...s.downloads, key] })),
+      claimCheckin: () => {
+        const s = get()
+        if (s.checkin.last === today()) return 0
+        const streak = s.checkin.last === addDays(-1) ? s.checkin.streak + 1 : 1
+        const coins = CHECKIN_COINS[(streak - 1) % CHECKIN_COINS.length]
+        set({ coins: s.coins + coins, checkin: { last: today(), streak }, tx: [{ ...ids(), method: 'Promotion', date: today(), label: `Daily check-in · day ${streak}`, coins }, ...s.tx] })
+        return coins
+      },
+      watchAd: () => {
+        const s = get()
+        const count = s.ads.date === today() ? s.ads.count : 0
+        if (count >= AD_MAX) return false
+        set({ coins: s.coins + AD_REWARD, ads: { date: today(), count: count + 1 }, tx: [{ ...ids(), method: 'Promotion', date: today(), label: 'Reward for watching an ad', coins: AD_REWARD }, ...s.tx] })
+        return true
+      },
+      setPref: (k, v) => set((s) => ({ prefs: { ...s.prefs, [k]: v } })),
+      setChoice: (key, c) => set((s) => ({ choices: { ...s.choices, [key]: c } })),
       reset: () => set({ ...initial, view: get().view }),
     }),
-    { name: 'reelo-proto-v5' },
+    { name: 'reelo-proto-v6' },
   ),
 )
 
+export const todayStr = today
 export const hasAccess = (s: { sub: Sub; unlocked: Record<string, true> }, showId: string, e: Episode) =>
   e.free || !!s.sub || !!s.unlocked[`${showId}:${e.n}`]

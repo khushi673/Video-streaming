@@ -38,7 +38,7 @@ export default function Plans() {
         <div className="mt-8 @3xl:mt-0 @3xl:row-span-2">
           <div role="radiogroup" aria-label="Plan" className="border border-line rounded-xl bg-surface divide-y divide-line overflow-hidden">
             {plans.map((p) => (
-              <button key={p.id} role="radio" aria-checked={sel === p.id} onClick={() => setSel(p.id)} className={`w-full flex items-center gap-4 px-5 py-5 text-left ${sel === p.id ? 'bg-bg' : 'bg-surface hover:bg-bg/60'}`}>
+              <button key={p.id} role="radio" aria-checked={sel === p.id} onClick={() => setSel(p.id)} className={`w-full flex items-center gap-4 px-5 py-5 text-left ${sel === p.id ? 'bg-accent/10' : 'bg-surface hover:bg-bg/60'}`}>
                 <span className={`w-5 h-5 rounded-full shrink-0 border ${sel === p.id ? 'border-[6px] border-accent' : 'border-line'}`} />
                 <span className="flex-1"><span className="block font-semibold text-lg">{p.name}</span><span className="text-sm text-ink/55">{p.best ? <b className="text-accent font-semibold">Most popular. </b> : null}{p.note}</span></span>
                 <span className="text-right"><span className="block text-2xl font-bold tracking-tight">{money(p.price)}</span><span className="text-xs text-ink/50">per {p.per}</span></span>

@@ -9,6 +9,8 @@ import Coins from './pages/Coins'
 import Account from './pages/Account'
 import Search from './pages/Search'
 import Browse from './pages/Browse'
+import Rewards from './pages/Rewards'
+import Info from './pages/Info'
 import Admin from './admin/Admin'
 
 export default function App() {
@@ -25,7 +27,10 @@ export default function App() {
           <Route path="coins" element={<Coins />} />
           <Route path="account" element={<Account />} />
           <Route path="search" element={<Search />} />
+          <Route path="browse/tag/:tag" element={<Browse />} />
           <Route path="browse/:kind" element={<Browse />} />
+          <Route path="rewards" element={<Rewards />} />
+          <Route path="info/:slug" element={<Info />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -1,11 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { create } from 'zustand'
-import { Check, X, CreditCard, Lock, Monitor, Smartphone, Gem } from 'lucide-react'
+import { Check, X, CreditCard, Lock, Monitor, Smartphone } from 'lucide-react'
 import { useStore } from '../store'
-import { coverSrc, type Show } from '../data'
+import { coverSrc, fmtViews, type Show } from '../data'
+
+const BADGE: Record<string, string> = { New: 'bg-gradient-to-r from-emerald-500 to-teal-400', Hot: 'bg-gradient-to-r from-orange-500 to-red-500', Trending: 'bg-gradient-to-r from-[#FF2E63] to-[#FF5A3C]', Interactive: 'bg-gradient-to-r from-violet-600 to-fuchsia-500' }
 
 export const Coin = ({ size = 16 }: { size?: number }) => (
-  <span className="inline-flex items-center justify-center rounded-full font-bold text-bg bg-ink shrink-0 align-middle" style={{ width: size, height: size, fontSize: size * 0.56 }}>
+  <span className="inline-flex items-center justify-center rounded-full font-extrabold text-[#5a3b00] shrink-0 align-middle bg-gradient-to-br from-[#FFE08A] to-[#FFB400] ring-1 ring-[#FFD25A]/60 shadow-[0_2px_8px_-2px_rgba(255,180,0,.7)]" style={{ width: size, height: size, fontSize: size * 0.56 }}>
     c
   </span>
 )
@@ -29,11 +31,12 @@ export const Toast = () => {
 }
 
 /** Vertical key art: a frame from the show's own video, with the title set over it. */
-export const Poster = ({ show, className = '', gem = false }: { show: Show; className?: string; big?: boolean; gem?: boolean }) => (
-  <div className={`@container relative overflow-hidden rounded-[6px] bg-surface2 ${className}`}>
+export const Poster = ({ show, className = '', badges = [], views }: { show: Show; className?: string; big?: boolean; badges?: string[]; views?: number }) => (
+  <div className={`@container relative overflow-hidden rounded-[12px] bg-surface2 ${className}`}>
     <img src={coverSrc(show)} alt="" loading="lazy" draggable={false} className="absolute inset-0 w-full h-full object-cover" />
     <div className="absolute inset-x-0 bottom-0 h-[55%] scrim-b opacity-90" />
-    {gem && <span title="Unlock with coins or Premium" className="absolute top-[5%] right-[6%] w-[16cqw] h-[16cqw] min-w-[18px] min-h-[18px] rounded-full bg-black/55 text-white flex items-center justify-center"><Gem className="w-[55%] h-[55%]" /></span>}
+    {badges.length > 0 && <div className="absolute top-[5%] left-[6%] flex flex-col items-start gap-1">{badges.map((b) => <span key={b} className={`${BADGE[b] ?? 'bg-accent'} text-white text-[10px] font-extrabold leading-none px-2 py-1 rounded-full shadow-lg`}>{b}</span>)}</div>}
+    {views != null && <span className="absolute top-[5%] right-[6%] flex items-center gap-1 text-[10px] font-bold leading-none bg-black/55 backdrop-blur rounded-full px-1.5 py-1"><svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="#fff" /></svg>{fmtViews(views)}</span>}
     <div className="absolute inset-x-0 bottom-0 p-[7cqw] text-white">
       <div className="font-extrabold leading-[1.02] tracking-[-0.03em]" style={{ fontSize: 'clamp(14px, 11cqw, 38px)' }}>{show.title}</div>
       <div className="mt-[1.4cqw] text-white/70 font-medium" style={{ fontSize: 'max(10px, 5cqw)' }}>{show.type === 'AI' ? 'AI series' : 'Live action'}, {show.genre}</div>
@@ -111,6 +114,22 @@ export const Frame = ({ children, floatingToggle }: { children: ReactNode; float
     <div className={`h-[100dvh] ${phone ? 'bg-[#07090C] flex items-center justify-center' : 'bg-bg'}`}>
       {(phone || floatingToggle) && <div className="hidden md:block fixed top-4 right-4 z-[200]"><ViewToggle /></div>}
       <div className={`@container relative w-full h-full ${phone ? 'md:w-[390px] md:h-[min(844px,calc(100dvh-32px))] md:rounded-[38px] md:border-[7px] md:border-[#2a2d34] md:overflow-hidden md:shadow-2xl' : ''}`}>{children}</div>
+    </div>
+  )
+}
+
+const CONFETTI = ['#FF2E63', '#FF7A1A', '#FFC83D', '#34E3A5', '#7C3AED', '#fff']
+/** One-shot confetti burst. Remount with a new `key` to fire it again. */
+export const Confetti = () => {
+  const [pieces] = useState(() => Array.from({ length: 48 }, (_, i) => ({
+    left: Math.random() * 100, delay: Math.random() * 0.25, dx: (Math.random() - 0.5) * 240, rot: 360 + Math.random() * 540, color: CONFETTI[i % CONFETTI.length],
+  })))
+  const [done, setDone] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setDone(true), 2200); return () => clearTimeout(t) }, [])
+  if (done) return null
+  return (
+    <div className="fixed inset-0 z-[150] pointer-events-none overflow-hidden" aria-hidden="true">
+      {pieces.map((p, i) => <span key={i} className="confetti-piece" style={{ left: `${p.left}%`, background: p.color, animationDelay: `${p.delay}s`, ['--dx' as string]: `${p.dx}px`, ['--rot' as string]: `${p.rot}deg` }} />)}
     </div>
   )
 }

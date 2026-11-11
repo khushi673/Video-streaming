@@ -10,7 +10,7 @@ export default function Logo({ size = 26, className = '' }: { size?: number; cla
   return (
     <span className={`inline-flex items-center gap-2 font-extrabold tracking-[-0.045em] leading-none ${className}`} style={{ fontSize: size }}>
       <LogoMark size={size * 1.02} />
-      reelo
+      <span className="grad-text">reelo</span>
     </span>
   )
 }
