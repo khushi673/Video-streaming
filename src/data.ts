@@ -111,7 +111,6 @@ export const choiceFor = (show: Show, n: number) => {
 }
 
 // ---- Rewards
-export const CHECKIN_COINS = [5, 5, 10, 10, 15, 15, 30]
 export const AD_REWARD = 10
 export const AD_MAX = 3
 

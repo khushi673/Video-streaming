@@ -9,7 +9,7 @@ const PAGES: Record<string, { title: string; body: string[] }> = {
   privacy: { title: 'Privacy Policy', body: ['We collect the information needed to run your account, process payments and improve recommendations.', 'We do not sell your personal data. You can request export or deletion from Contact us.', NOTE] },
   cookies: { title: 'Cookies', body: ['We use essential cookies to keep you signed in and remember preferences such as subtitle language.', NOTE] },
   dmca: { title: 'DMCA and copyright', body: ['If you believe content on Reelo infringes your copyright, send the details to the contact below.', NOTE] },
-  help: { title: 'Help centre', body: ['Episodes 1 to 3 of every show are free. Later episodes unlock with coins or a Premium plan.', 'Unlocked episodes stay on your account. Premium gives access to every eligible episode while it is active.', 'Daily check-in and ad rewards are on the Rewards page.', 'Need more help? Use Contact us.'] },
+  help: { title: 'Help centre', body: ['Episodes 1 to 3 of every show are free. Later episodes unlock with coins or a Premium plan.', 'Unlocked episodes stay on your account. Premium gives access to every eligible episode while it is active.', 'Ad rewards are on the Rewards page.', 'Need more help? Use Contact us.'] },
   about: { title: 'About Reelo', body: ['Reelo is a short vertical series platform made to watch in minutes, with live-action shows, AI series, Originals and interactive stories.', NOTE] },
   press: { title: 'Media and public relations', body: ['For press enquiries, interviews and assets, email press@reelo.example.', NOTE] },
   apps: { title: 'Get the app', body: ['Reelo for iOS and Android is planned. Subscriptions in the apps will be billed through the App Store and Google Play.'] },

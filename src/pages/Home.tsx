@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Play, Info, Gift, Smartphone } from 'lucide-react'
-import { useStore, todayStr } from '../store'
+import { Play, Info, Smartphone } from 'lucide-react'
+import { useStore } from '../store'
 import { Card, Row } from '../components/Cards'
 import { bannerSrc, coverSrc, FREE_EPISODES, isInteractive, themeShelves, THEME_EMOJI } from '../data'
 
 const GENRE_EMOJI: Record<string, string> = { Romance: '💘', Thriller: '🔪', Comedy: '😂', Drama: '🎭', Fantasy: '🐉', 'Sci-Fi': '🚀', Horror: '👻', Action: '💥' }
 
 export default function HomePage() {
-  const { shows, progress, checkin } = useStore()
+  const { shows, progress } = useStore()
   const nav = useNavigate()
   const live = shows.filter((s) => s.status === 'published')
   const featured = live.filter((s) => s.trending).slice(0, 4)
@@ -22,7 +22,6 @@ export default function HomePage() {
   const cont = live.filter((s) => progress[s.id])
   const genres = Array.from(new Set(live.map((s) => s.genre))).slice(0, 4)
   const themes = themeShelves(shows).slice(0, 4)
-  const canCheckin = checkin.last !== todayStr()
   return (
     <div className="pb-6">
       {hero && (
@@ -53,15 +52,6 @@ export default function HomePage() {
         </section>
       )}
       <div className="relative z-10 -mt-4 @3xl:-mt-10">
-        {canCheckin && (
-          <div className="px-4 @3xl:px-12 mb-1">
-            <Link to="/rewards" className="inline-flex items-center gap-2.5 bg-surface/80 border border-line hover:border-accent/60 rounded-full pl-1.5 pr-4 py-1.5 text-sm transition-colors">
-              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FFE08A] to-[#FFB400] text-[#5a3b00] flex items-center justify-center"><Gift size={15} /></span>
-              <span className="font-semibold">Daily check-in</span><span className="text-ink/55">Free coins waiting</span>
-              <span className="relative flex w-2 h-2"><span className="absolute inline-flex w-full h-full rounded-full bg-accent opacity-75 animate-ping" /><span className="relative w-2 h-2 rounded-full bg-accent" /></span>
-            </Link>
-          </div>
-        )}
         <Row title="Continue watching ▶️" shows={cont} continuing={progress} />
         <Row ranked title="Top 10 this week 🔥" shows={live.filter((s) => s.trending)} viewAll="/browse/top" />
         <Row title="New releases ✨" shows={live.filter((s) => s.isNew)} viewAll="/browse/new" />

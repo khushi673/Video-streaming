@@ -3,7 +3,7 @@ import { NavLink, Link, Outlet, useLocation, useNavigate, Navigate } from 'react
 import { Home, Crown, User, Search, Bell, ChevronDown, LogOut, Coins as CoinsIcon, ShieldCheck, Monitor, Smartphone, Gift } from 'lucide-react'
 import { useStore } from '../store'
 import { themeShelves, THEME_EMOJI } from '../data'
-import { Toast, Coin, Frame } from './ui'
+import { Toast, Coin, Frame, Sheet } from './ui'
 import Footer from './Footer'
 import Logo from './Logo'
 
@@ -54,13 +54,14 @@ export default function Shell() {
   const [q, setQ] = useState('')
   const scroller = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
+  const [catSheet, setCatSheet] = useState(false)
   const closeMenu = () => setMenu('none')
   const profileRef = useDismiss(menu === 'profile', closeMenu)
   const bellRef = useDismiss(menu === 'bell', closeMenu)
   const catRef = useDismiss(menu === 'cat', closeMenu)
   const genres = Array.from(new Set(shows.filter((x) => x.status === 'published').map((x) => x.genre)))
   const themes = themeShelves(shows).slice(0, 8)
-  useEffect(() => { scroller.current?.scrollTo(0, 0); setScrolled(false); setMenu('none'); if (pathname !== '/search') { setSearching(false); setQ('') } }, [pathname])
+  useEffect(() => { scroller.current?.scrollTo(0, 0); setScrolled(false); setMenu('none'); setCatSheet(false); if (pathname !== '/search') { setSearching(false); setQ('') } }, [pathname])
   useEffect(() => { if (searching) searchRef.current?.focus() }, [searching])
   if (!user) return <Navigate to="/auth" replace />
   const isWatch = pathname.startsWith('/watch')
@@ -149,7 +150,10 @@ export default function Shell() {
         {!isWatch && (
           <header className="@3xl:hidden absolute top-0 inset-x-0 z-30 flex items-center justify-between px-4 pt-4 pb-2 pointer-events-none">
             {hasHero ? <Link to="/" className="text-accent pointer-events-auto"><Logo size={24} /></Link> : <span />}
-            <Link to="/coins" className="pointer-events-auto flex items-center gap-1.5 text-sm font-semibold bg-black/45 backdrop-blur rounded-full pl-1.5 pr-3 py-1"><Coin size={20} />{coins}</Link>
+<div className="pointer-events-auto flex items-center gap-2">
+              <button onClick={() => setCatSheet(true)} aria-haspopup="dialog" className="flex items-center gap-1 text-sm font-semibold bg-black/45 backdrop-blur rounded-full pl-3 pr-2 py-1.5">Categories<ChevronDown size={15} /></button>
+                          <Link to="/coins" className="flex items-center gap-1.5 text-sm font-semibold bg-black/45 backdrop-blur rounded-full pl-1.5 pr-3 py-1"><Coin size={20} />{coins}</Link>
+            </div>
           </header>
         )}
         <div ref={scroller} onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 40)} className={`flex-1 min-h-0 overflow-y-auto no-scrollbar relative ${hasHero || isWatch ? '' : 'pt-14 @3xl:pt-[68px]'}`}>
@@ -164,6 +168,16 @@ export default function Shell() {
               </NavLink>
             ))}
           </nav>
+        )}
+        {catSheet && (
+          <Sheet title="Categories" onClose={() => setCatSheet(false)}>
+            <div className="max-h-[65dvh] overflow-y-auto no-scrollbar space-y-5">
+              {([['Genres', genres.map((g) => [`${GENRE_EMOJI[g] ?? '🎬'} ${g}`, `/browse/genre/${encodeURIComponent(g)}`])], ['Themes', themes.map((t) => [`${THEME_EMOJI[t] ?? '✨'} ${t}`, `/browse/tag/${encodeURIComponent(t)}`])], ['Format', formats.map((f) => [f.label, f.to])]] as [string, string[][]][]).map(([h, items]) => (
+                <div key={h}><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">{h}</p>
+                  <div className="flex flex-wrap gap-2">{items.map(([l, to]) => <Link key={to} to={to} className="px-3.5 py-1.5 rounded-full text-[13px] font-semibold border border-line bg-surface hover:border-accent/60">{l}</Link>)}</div></div>
+              ))}
+            </div>
+          </Sheet>
         )}
         <Toast />
       </div>

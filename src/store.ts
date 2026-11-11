@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { seedShows, seedPlans, seedPacks, CHECKIN_COINS, AD_REWARD, AD_MAX, type Show, type Episode, type Plan, type Pack } from './data'
+import { seedShows, seedPlans, seedPacks, AD_REWARD, AD_MAX, type Show, type Episode, type Plan, type Pack } from './data'
 
 export type Tx = { id: string; txnId: string; ref: string; method: string; date: string; label: string; money?: number; coins?: number }
 type User = { name: string; email: string; uid: string }
@@ -43,8 +43,6 @@ type State = {
   addComment: (key: string, text: string) => void
   downloads: string[]
   toggleDownload: (key: string) => void
-  checkin: { last: string; streak: number }
-  claimCheckin: () => number
   ads: { date: string; count: number }
   watchAd: () => boolean
   prefs: Prefs
@@ -75,7 +73,6 @@ const initial = {
   lang: 'Off',
   comments: {} as Record<string, Comment[]>,
   downloads: [] as string[],
-  checkin: { last: '', streak: 0 },
   ads: { date: '', count: 0 },
   prefs: { newEpisodes: true, rewards: true, promos: false } as Prefs,
   choices: {} as Record<string, 'a' | 'b'>,
@@ -123,14 +120,6 @@ export const useStore = create<State>()(
       setLang: (lang) => set({ lang }),
       addComment: (key, text) => set((s) => ({ comments: { ...s.comments, [key]: [{ id: 'c' + Date.now(), name: s.user?.name ?? 'You', text, date: today() }, ...(s.comments[key] ?? [])] } })),
       toggleDownload: (key) => set((s) => ({ downloads: s.downloads.includes(key) ? s.downloads.filter((x) => x !== key) : [...s.downloads, key] })),
-      claimCheckin: () => {
-        const s = get()
-        if (s.checkin.last === today()) return 0
-        const streak = s.checkin.last === addDays(-1) ? s.checkin.streak + 1 : 1
-        const coins = CHECKIN_COINS[(streak - 1) % CHECKIN_COINS.length]
-        set({ coins: s.coins + coins, checkin: { last: today(), streak }, tx: [{ ...ids(), method: 'Promotion', date: today(), label: `Daily check-in · day ${streak}`, coins }, ...s.tx] })
-        return coins
-      },
       watchAd: () => {
         const s = get()
         const count = s.ads.date === today() ? s.ads.count : 0

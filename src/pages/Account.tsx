@@ -40,7 +40,7 @@ export default function Account() {
           <Toggle k="promos" label="Offers and promotions" />
         </div>
         <div className="mt-6 space-y-1 text-sm">
-          <Link to="/rewards" className="flex items-center gap-2 py-2 text-accent font-semibold"><Gift size={14} /> Daily rewards</Link>
+          <Link to="/rewards" className="flex items-center gap-2 py-2 text-accent font-semibold"><Gift size={14} /> Rewards</Link>
           <Link to="/admin" className="block @3xl:hidden py-2 text-ink/60">Open admin panel</Link>
           <div className="@3xl:hidden flex flex-wrap gap-x-4 gap-y-1 py-2 text-ink/55">{[['Help','help'],['Contact','contact'],['Feedback','feedback'],['Terms','terms'],['Privacy','privacy'],['Get the app','apps']].map(([l, k]) => <Link key={k} to={`/info/${k}`}>{l}</Link>)}</div>
           <button onClick={() => { s.reset(); nav('/auth') }} className="flex items-center gap-2 py-2 text-ink/55 hover:text-ink"><RotateCcw size={14} /> Reset demo data</button>
