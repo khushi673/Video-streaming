@@ -54,9 +54,13 @@ export default function HomePage() {
       )}
       <div className="relative z-10 -mt-4 @3xl:-mt-10">
         {canCheckin && (
-          <Link to="/rewards" className="mx-4 @3xl:mx-12 mb-2 flex items-center gap-3 bg-gradient-to-r from-[#3a1030] to-[#2a1545] border border-accent/40 rounded-2xl px-4 py-3.5 text-sm hover:border-accent pulse-glow">
-            <Gift size={18} className="text-accent shrink-0" /><span className="flex-1"><b className="font-semibold">Daily check-in is ready.</b> <span className="text-ink/60">Claim free coins today.</span></span><span className="font-semibold text-accent">Claim</span>
-          </Link>
+          <div className="px-4 @3xl:px-12 mb-1">
+            <Link to="/rewards" className="inline-flex items-center gap-2.5 bg-surface/80 border border-line hover:border-accent/60 rounded-full pl-1.5 pr-4 py-1.5 text-sm transition-colors">
+              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-[#FFE08A] to-[#FFB400] text-[#5a3b00] flex items-center justify-center"><Gift size={15} /></span>
+              <span className="font-semibold">Daily check-in</span><span className="text-ink/55">Free coins waiting</span>
+              <span className="relative flex w-2 h-2"><span className="absolute inline-flex w-full h-full rounded-full bg-accent opacity-75 animate-ping" /><span className="relative w-2 h-2 rounded-full bg-accent" /></span>
+            </Link>
+          </div>
         )}
         <Row title="Continue watching ▶️" shows={cont} continuing={progress} />
         <Row ranked title="Top 10 this week 🔥" shows={live.filter((s) => s.trending)} viewAll="/browse/top" />

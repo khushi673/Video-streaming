@@ -31,16 +31,16 @@ export const Toast = () => {
 }
 
 /** Vertical key art: a frame from the show's own video, with the title set over it. */
-export const Poster = ({ show, className = '', badges = [], views }: { show: Show; className?: string; big?: boolean; badges?: string[]; views?: number }) => (
+export const Poster = ({ show, className = '', badges = [], views, bare = false }: { show: Show; className?: string; big?: boolean; badges?: string[]; views?: number; bare?: boolean }) => (
   <div className={`@container relative overflow-hidden rounded-[12px] bg-surface2 ${className}`}>
     <img src={coverSrc(show)} alt="" loading="lazy" draggable={false} className="absolute inset-0 w-full h-full object-cover" />
-    <div className="absolute inset-x-0 bottom-0 h-[55%] scrim-b opacity-90" />
+    {!bare && <div className="absolute inset-x-0 bottom-0 h-[55%] scrim-b opacity-90" />}
     {badges.length > 0 && <div className="absolute top-[5%] left-[6%] flex flex-col items-start gap-1">{badges.map((b) => <span key={b} className={`${BADGE[b] ?? 'bg-accent'} text-white text-[10px] font-extrabold leading-none px-2 py-1 rounded-full shadow-lg`}>{b}</span>)}</div>}
     {views != null && <span className="absolute top-[5%] right-[6%] flex items-center gap-1 text-[10px] font-bold leading-none bg-black/55 backdrop-blur rounded-full px-1.5 py-1"><svg width="8" height="8" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="#fff" /></svg>{fmtViews(views)}</span>}
-    <div className="absolute inset-x-0 bottom-0 p-[7cqw] text-white">
+    {!bare && <div className="absolute inset-x-0 bottom-0 p-[7cqw] text-white">
       <div className="font-extrabold leading-[1.02] tracking-[-0.03em]" style={{ fontSize: 'clamp(14px, 11cqw, 38px)' }}>{show.title}</div>
       <div className="mt-[1.4cqw] text-white/70 font-medium" style={{ fontSize: 'max(10px, 5cqw)' }}>{show.type === 'AI' ? 'AI series' : 'Live action'}, {show.genre}</div>
-    </div>
+    </div>}
   </div>
 )
 
