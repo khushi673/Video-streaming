@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { NavLink, Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { Home, Crown, User, Search, Bell, ChevronDown, LogOut, Coins as CoinsIcon, ShieldCheck, Monitor, Smartphone, Gift } from 'lucide-react'
 import { useStore } from '../store'
+import { themeShelves, THEME_EMOJI } from '../data'
 import { Toast, Coin, Frame } from './ui'
 import Footer from './Footer'
 import Logo from './Logo'
@@ -14,13 +15,16 @@ const tabs = [
 ]
 const links = [
   { to: '/', label: 'Home' },
-  { to: '/browse/ai', label: 'AI series' },
-  { to: '/browse/live', label: 'Live action' },
-  { to: '/browse/originals', label: 'Originals' },
-  { to: '/browse/interactive', label: 'Interactive' },
   { to: '/browse/new', label: 'New and popular' },
   { to: '/browse/list', label: 'My list' },
 ]
+const formats = [
+  { to: '/browse/live', label: 'Live action', d: 'Filmed with real actors' },
+  { to: '/browse/ai', label: 'AI series', d: 'Created with AI' },
+  { to: '/browse/originals', label: 'Reelo Originals', d: 'Made for Reelo' },
+  { to: '/browse/interactive', label: 'Interactive', d: 'You choose what happens' },
+]
+const GENRE_EMOJI: Record<string, string> = { Romance: '💘', Thriller: '🔪', Comedy: '😂', Drama: '🎭', Fantasy: '🐉', 'Sci-Fi': '🚀', Horror: '👻', Action: '💥' }
 const notes = [
   { t: 'New episodes of Neon Dynasty 2099', d: '2 days ago' },
   { t: 'Heiress in Disguise is now streaming', d: '4 days ago' },
@@ -41,11 +45,11 @@ function useDismiss(open: boolean, close: () => void) {
 }
 
 export default function Shell() {
-  const { user, coins, sub, view, setView, signOut } = useStore()
+  const { user, coins, sub, view, setView, signOut, shows } = useStore()
   const { pathname } = useLocation()
   const nav = useNavigate()
   const [scrolled, setScrolled] = useState(false)
-  const [menu, setMenu] = useState<'none' | 'profile' | 'bell'>('none')
+  const [menu, setMenu] = useState<'none' | 'profile' | 'bell' | 'cat'>('none')
   const [searching, setSearching] = useState(false)
   const [q, setQ] = useState('')
   const scroller = useRef<HTMLDivElement>(null)
@@ -53,6 +57,9 @@ export default function Shell() {
   const closeMenu = () => setMenu('none')
   const profileRef = useDismiss(menu === 'profile', closeMenu)
   const bellRef = useDismiss(menu === 'bell', closeMenu)
+  const catRef = useDismiss(menu === 'cat', closeMenu)
+  const genres = Array.from(new Set(shows.filter((x) => x.status === 'published').map((x) => x.genre)))
+  const themes = themeShelves(shows).slice(0, 8)
   useEffect(() => { scroller.current?.scrollTo(0, 0); setScrolled(false); setMenu('none'); if (pathname !== '/search') { setSearching(false); setQ('') } }, [pathname])
   useEffect(() => { if (searching) searchRef.current?.focus() }, [searching])
   if (!user) return <Navigate to="/auth" replace />
@@ -68,8 +75,27 @@ export default function Shell() {
           <header className={`hidden @3xl:flex absolute top-0 inset-x-0 h-[68px] items-center px-6 @5xl:px-12 z-30 transition-colors duration-300 ${solid ? 'bg-bg/95 backdrop-blur' : 'scrim-t'}`}>
             <Link to="/" className="text-accent mr-8 @5xl:mr-10 shrink-0" aria-label="Reelo home"><Logo size={28} /></Link>
             <nav className="flex items-center gap-4 @5xl:gap-5" aria-label="Main">
-              {links.map((t) => (
-                <NavLink key={t.to} to={t.to} end className={({ isActive }) => `text-[14px] whitespace-nowrap transition-colors ${isActive ? 'text-ink font-extrabold border-b-2 border-accent pb-0.5' : 'text-ink/75 hover:text-ink/100'}`}>{t.label}</NavLink>
+              {links.map((t, i) => (
+                <Fragment key={t.to}>
+                  <NavLink to={t.to} end className={({ isActive }) => `text-[14px] whitespace-nowrap transition-colors ${isActive ? 'text-ink font-extrabold border-b-2 border-accent pb-0.5' : 'text-ink/75 hover:text-ink/100'}`}>{t.label}</NavLink>
+                  {i === 0 && (
+                    <div className="relative" ref={catRef} onMouseEnter={() => setMenu('cat')} onMouseLeave={closeMenu}>
+                      <button onClick={() => setMenu(menu === 'cat' ? 'none' : 'cat')} aria-expanded={menu === 'cat'} aria-haspopup="true" className={`flex items-center gap-1 text-[14px] whitespace-nowrap ${pathname.startsWith('/browse/genre') || pathname.startsWith('/browse/tag') || /\/browse\/(live|ai|originals|interactive)/.test(pathname) ? 'text-ink font-extrabold' : 'text-ink/75 hover:text-ink'}`}>Categories<ChevronDown size={15} className={`transition-transform ${menu === 'cat' ? 'rotate-180' : ''}`} /></button>
+                      {menu === 'cat' && (
+                        <div className="absolute left-0 top-full pt-3 anim-fade z-40">
+                          <div className="w-[600px] grid grid-cols-3 gap-6 bg-bg/95 backdrop-blur border border-line rounded-2xl shadow-2xl p-5">
+                            <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Genres</p>
+                              <ul className="space-y-0.5">{genres.map((g) => <li key={g}><Link to={`/browse/genre/${encodeURIComponent(g)}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10"><span aria-hidden="true">{GENRE_EMOJI[g] ?? '🎬'}</span>{g}</Link></li>)}</ul></div>
+                            <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Themes</p>
+                              <ul className="space-y-0.5">{themes.map((t) => <li key={t}><Link to={`/browse/tag/${encodeURIComponent(t)}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ink/85 hover:bg-white/10"><span aria-hidden="true">{THEME_EMOJI[t] ?? '✨'}</span>{t}</Link></li>)}</ul></div>
+                            <div><p className="text-[11px] font-bold uppercase tracking-wider text-ink/45 mb-2">Format</p>
+                              <ul className="space-y-0.5">{formats.map((f) => <li key={f.to}><Link to={f.to} className="block rounded-lg px-2 py-1.5 hover:bg-white/10"><span className="block text-sm font-semibold text-ink/90">{f.label}</span><span className="block text-xs text-ink/50">{f.d}</span></Link></li>)}</ul></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Fragment>
               ))}
             </nav>
 

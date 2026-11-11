@@ -27,6 +27,7 @@ export default function App() {
           <Route path="coins" element={<Coins />} />
           <Route path="account" element={<Account />} />
           <Route path="search" element={<Search />} />
+          <Route path="browse/genre/:genre" element={<Browse />} />
           <Route path="browse/tag/:tag" element={<Browse />} />
           <Route path="browse/:kind" element={<Browse />} />
           <Route path="rewards" element={<Rewards />} />
